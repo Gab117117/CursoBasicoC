@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>C# desde cero: aprende programando</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#f3f2fb;--panel:#ffffff;--ink:#1d1b2e;--mute:#6a6784;--line:#dcd9ef;
+  --cs:#5b2a9e;--int:#2f6fed;--dbl:#0d9488;--str:#d9480f;--bool:#b4235f;--chr:#7c8a00;
+  --ok:#15803d;--bad:#b91c1c;--code:#1b1930;--codeink:#e8e6ff;
+  --sans:'Bricolage Grotesque',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#15132a;--panel:#201d3b;--ink:#efedff;--mute:#a19dc4;--line:#37335e;--cs:#b794f6;
+  --int:#6ea0ff;--dbl:#2dd4bf;--str:#ff9b63;--bool:#ff7aa8;--chr:#c8d84a;--ok:#4ade80;--bad:#f87171;--code:#0f0d20;
+}}
+:root[data-theme="dark"]{
+  --bg:#15132a;--panel:#201d3b;--ink:#efedff;--mute:#a19dc4;--line:#37335e;--cs:#b794f6;
+  --int:#6ea0ff;--dbl:#2dd4bf;--str:#ff9b63;--bool:#ff7aa8;--chr:#c8d84a;--ok:#4ade80;--bad:#f87171;--code:#0f0d20;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.55}
+.wrap{max-width:900px;margin:0 auto;padding:0 18px 60px}
+header{padding:36px 0 18px}
+h1{font-size:clamp(2.2rem,7vw,3.8rem);line-height:1;margin:0 0 10px;font-weight:800;letter-spacing:-.03em}
+h1 span{font-family:var(--mono);font-weight:600;color:var(--cs)}
+header p{margin:0;color:var(--mute);max-width:56ch}
+nav{display:flex;gap:6px;flex-wrap:wrap;margin:18px 0;position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);padding:8px 0;z-index:5}
+nav button{font:inherit;font-weight:700;border:2px solid var(--line);background:var(--panel);color:var(--ink);padding:8px 16px;border-radius:999px;cursor:pointer}
+nav button[aria-selected="true"]{background:var(--cs);border-color:var(--cs);color:#fff}
+:focus-visible{outline:3px solid var(--int);outline-offset:2px}
+section{display:none}section.on{display:block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:16px}
+h2{margin:0 0 6px;font-size:1.6rem;letter-spacing:-.02em}
+.lead{color:var(--mute);margin:0 0 16px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:end}
+label{display:flex;flex-direction:column;font-size:.85rem;font-weight:700;color:var(--mute);gap:4px}
+input,select{font:inherit;font-family:var(--mono);padding:9px 10px;border:2px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);min-width:0}
+.btn{font:inherit;font-weight:700;background:var(--cs);color:#fff;border:0;padding:11px 18px;border-radius:8px;cursor:pointer}
+.btn:active{transform:translateY(1px)}
+.btn.alt{background:transparent;color:var(--cs);border:2px solid var(--cs)}
+pre.code{background:var(--code);color:var(--codeink);font-family:var(--mono);font-size:.92rem;padding:14px 16px;border-radius:10px;overflow-x:auto;margin:14px 0;line-height:1.7}
+pre.code .l{display:block;border-left:4px solid transparent;padding-left:10px;margin-left:-14px;opacity:.55;transition:.25s}
+pre.code .l.hot{opacity:1;border-left-color:#5eead4;background:#ffffff12}
+.k{color:#c4a1ff}.t{color:#7fb0ff}.s{color:#ffb287}.n{color:#a5e8a0}
+.msg{min-height:1.6em;font-weight:600;font-size:.95rem;margin-top:8px}
+.msg.bad{color:var(--bad)}.msg.ok{color:var(--ok)}
+.mem{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:14px}
+.box{border:3px solid var(--c);border-radius:10px;background:var(--panel);overflow:hidden;animation:pop .35s}
+.box .h{background:var(--c);color:#fff;font-family:var(--mono);font-size:.8rem;padding:3px 8px;display:flex;justify-content:space-between}
+.box .v{font-family:var(--mono);font-weight:600;font-size:1.3rem;padding:10px 8px 2px;word-break:break-all}
+.box .nm{font-size:.85rem;color:var(--mute);padding:0 8px 8px}
+@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+.empty{color:var(--mute);font-style:italic;margin-top:14px}
+.cons{background:var(--code);color:#a5e8a0;font-family:var(--mono);font-size:.9rem;border-radius:10px;padding:12px 14px;min-height:64px;margin-top:10px}
+.cons b{color:#8b87b8;font-weight:400}
+.flow{width:100%;max-width:560px;display:block;margin:10px auto}
+.flow .nd{fill:var(--panel);stroke:var(--line);stroke-width:2;transition:.3s}
+.flow .nd.hot{fill:var(--ok);stroke:var(--ok)}
+.flow text{fill:var(--ink);font-family:var(--mono);font-size:13px;text-anchor:middle}
+.flow .hot~text,.flow text.w{fill:#fff}
+.flow path{stroke:var(--line);stroke-width:3;fill:none;transition:.3s}
+.flow path.hot{stroke:var(--ok)}
+input[type=range]{width:100%;accent-color:var(--cs);padding:0}
+.big{font-family:var(--mono);font-size:2rem;font-weight:800;color:var(--cs)}
+.cells{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+.cell{width:56px;height:56px;border:2px dashed var(--line);border-radius:10px;display:grid;place-items:center;font-family:var(--mono);font-weight:700;color:var(--mute);transition:.25s}
+.cell.on{border-style:solid;border-color:var(--cs);background:var(--cs);color:#fff;transform:translateY(-6px)}
+.cell.done{border-style:solid;border-color:var(--dbl);color:var(--dbl)}
+.opt{display:block;width:100%;text-align:left;font:inherit;font-family:var(--mono);background:var(--bg);color:var(--ink);border:2px solid var(--line);border-radius:8px;padding:9px 12px;margin-top:8px;cursor:pointer}
+.opt.ok{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 18%,transparent)}
+.opt.bad{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 18%,transparent)}
+.tip{font-size:.9rem;color:var(--mute);border-left:4px solid var(--cs);padding-left:12px;margin:12px 0 0}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>C# desde cero<span>;</span></h1>
+  <p>Cuatro ideas para empezar a programar. Cambia los valores, pulsa los botones y mira qué pasa dentro del programa.</p>
+</header>
+
+<nav role="tablist" aria-label="Lecciones">
+  <button role="tab" aria-selected="true" data-t="v">Variables</button>
+  <button role="tab" aria-selected="false" data-t="c">Condicionales</button>
+  <button role="tab" aria-selected="false" data-t="b">Bucles</button>
+  <button role="tab" aria-selected="false" data-t="q">Ponte a prueba</button>
+</nav>
+
+<!-- VARIABLES -->
+<section id="v" class="on">
+  <div class="card">
+    <h2>Variables: cajas con nombre</h2>
+    <p class="lead">Una variable es una caja en la memoria. Tiene un tipo (qué cabe dentro), un nombre y un valor.</p>
+    <div class="row">
+      <label>Tipo<select id="vt"><option>int</option><option>double</option><option>string</option><option>bool</option><option>char</option></select></label>
+      <label>Nombre<input id="vn" value="edad" size="10" autocomplete="off"></label>
+      <label>Valor<input id="vv" value="15" size="12" autocomplete="off"></label>
+      <button class="btn" id="vb">Guardar en memoria</button>
+    </div>
+    <pre class="code" id="vcode"><span class="t">int</span> edad = <span class="n">15</span>;</pre>
+    <div class="msg" id="vm"></div>
+    <div class="mem" id="mem"></div>
+    <p class="empty" id="vempty">La memoria está vacía. Guarda tu primera variable.</p>
+    <p class="tip">Prueba: escribe un <b>int</b> con valor 3.5 y mira el error. Luego guarda otra variable con el mismo nombre para cambiar su valor.</p>
+  </div>
+</section>
+
+<!-- CONDICIONALES -->
+<section id="c">
+  <div class="card">
+    <h2>if / else: elegir un camino</h2>
+    <p class="lead">El programa evalúa una condición. Si es verdadera sigue un camino; si no, sigue el otro.</p>
+    <div class="row">
+      <label style="flex:1;min-width:200px">edad: <span class="big" id="ev">16</span><input type="range" id="er" min="0" max="40" value="16"></label>
+      <label>Operador<select id="eo"><option>&gt;=</option><option>&gt;</option><option>==</option><option>&lt;</option></select></label>
+      <label>Comparar con<input id="el" type="number" value="18" style="width:80px"></label>
+    </div>
+    <pre class="code"><span class="l" id="l0"><span class="t">int</span> edad = <span class="n" id="c0">16</span>;</span><span class="l hot" id="l1"><span class="k">if</span> (edad <span id="c1">&gt;=</span> <span class="n" id="c2">18</span>)</span><span class="l" id="l2">    Console.WriteLine(<span class="s">"Puedes entrar"</span>);</span><span class="l" id="l3"><span class="k">else</span></span><span class="l" id="l4">    Console.WriteLine(<span class="s">"Aún no puedes entrar"</span>);</span></pre>
+    <svg class="flow" viewBox="0 0 560 250" role="img" aria-label="Diagrama de flujo del if else">
+      <path id="pA" d="M280 40 V70"/><path id="pT" d="M210 110 H110 V170"/><path id="pF" d="M350 110 H450 V170"/>
+      <rect class="nd" x="220" y="6" width="120" height="34" rx="17"/><text x="280" y="28">inicio</text>
+      <polygon class="nd" points="280,70 350,110 280,150 210,110"/><text x="280" y="114" id="fq">¿edad ≥ 18?</text>
+      <rect class="nd" id="nT" x="30" y="170" width="160" height="50" rx="8"/><text x="110" y="200" id="tT">Puedes entrar</text>
+      <rect class="nd" id="nF" x="370" y="170" width="160" height="50" rx="8"/><text x="450" y="200" id="tF">Aún no puedes</text>
+      <text x="155" y="102" style="font-size:12px">verdadero</text><text x="405" y="102" style="font-size:12px">falso</text>
+    </svg>
+    <div class="cons" id="cc"></div>
+    <p class="tip">Mueve el deslizador y cambia el operador. Fíjate en el cuidado con <b>==</b> (comparar) y <b>=</b> (asignar).</p>
+  </div>
+</section>
+
+<!-- BUCLES -->
+<section id="b">
+  <div class="card">
+    <h2>for: repetir sin copiar y pegar</h2>
+    <p class="lead">Un bucle ejecuta el mismo bloque varias veces. Aquí cada casilla es una vuelta.</p>
+    <div class="row">
+      <label>Repeticiones (n)<input id="bn" type="number" min="1" max="12" value="5" style="width:90px"></label>
+      <button class="btn" id="bgo">Ejecutar</button>
+      <button class="btn alt" id="brs">Reiniciar</button>
+      <div style="margin-left:auto">i = <span class="big" id="bi">–</span></div>
+    </div>
+    <pre class="code"><span class="l" id="b1"><span class="k">for</span> (<span class="t">int</span> i = <span class="n">0</span>; i &lt; <span class="n" id="bnv">5</span>; i++)</span><span class="l" id="b2">{</span><span class="l" id="b3">    Console.WriteLine(<span class="s">"Vuelta "</span> + i);</span><span class="l" id="b4">}</span></pre>
+    <div class="cells" id="cells"></div>
+    <div class="cons" id="bc"></div>
+    <p class="tip">Fíjate: <b>i</b> empieza en 0 y el bucle se detiene cuando <b>i &lt; n</b> deja de cumplirse, por eso n vueltas van de 0 a n-1.</p>
+  </div>
+</section>
+
+<!-- QUIZ -->
+<section id="q">
+  <div class="card">
+    <h2>Ponte a prueba</h2>
+    <p class="lead">Lee el código y adivina qué se imprime. Puntos: <b id="qs">0</b> / 3</p>
+    <div id="qz"></div>
+  </div>
+</section>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+// Tabs
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('nav button').forEach(x=>x.setAttribute('aria-selected',x===b));
+  document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id===b.dataset.t));
+});
+
+// ---- Variables
+const COL={int:'var(--int)',double:'var(--dbl)',string:'var(--str)',bool:'var(--bool)',char:'var(--chr)'};
+const SIZE={int:'4 bytes',double:'8 bytes',string:'texto',bool:'1 bit',char:'2 bytes'};
+const mem={};
+function check(t,v){
+  if(t==='int')return /^-?\d+$/.test(v)?null:'Un int solo guarda números enteros, sin decimales ni letras.';
+  if(t==='double')return v!==''&&!isNaN(v)?null:'Un double guarda números; usa punto para los decimales (3.5).';
+  if(t==='bool')return v==='true'||v==='false'?null:'Un bool solo puede valer true o false, en minúsculas.';
+  if(t==='char')return v.length===1?null:'Un char guarda exactamente un carácter.';
+  return null;
+}
+function fmt(t,v){return t==='string'?'"'+v+'"':t==='char'?"'"+v+"'":v}
+function vcode(){
+  const t=$('vt').value,n=$('vn').value||'nombre',v=$('vv').value;
+  const cls=t==='string'||t==='char'?'s':t==='bool'?'k':'n';
+  $('vcode').innerHTML='<span class="t">'+t+'</span> '+esc(n)+' = <span class="'+cls+'">'+esc(fmt(t,v))+'</span>;';
+}
+['vt','vn','vv'].forEach(i=>$(i).oninput=vcode);
+$('vt').onchange=vcode;
+$('vb').onclick=()=>{
+  const t=$('vt').value,n=$('vn').value.trim(),v=$('vv').value,m=$('vm');
+  m.className='msg bad';
+  if(!/^[A-Za-z_][A-Za-z0-9_]*$/.test(n)){m.textContent='El nombre debe empezar con letra y no llevar espacios ni símbolos.';return}
+  if(mem[n]&&mem[n].t!==t){m.textContent='"'+n+'" ya existe como '+mem[n].t+'. En C# una variable no cambia de tipo.';return}
+  const e=check(t,v);if(e){m.textContent='Error: '+e;return}
+  const re=!!mem[n];mem[n]={t,v};
+  m.className='msg ok';m.textContent=re?'Reasignaste '+n+': ahora vale '+v+'.':'Listo: '+n+' guardada en memoria.';
+  draw();
+};
+function draw(){
+  const k=Object.keys(mem);$('vempty').style.display=k.length?'none':'block';
+  $('mem').innerHTML=k.map(n=>{const x=mem[n];return '<div class="box" style="--c:'+COL[x.t]+'"><div class="h"><span>'+x.t+'</span><span>'+SIZE[x.t]+'</span></div><div class="v">'+esc(fmt(x.t,x.v))+'</div><div class="nm">'+esc(n)+'</div></div>'}).join('');
+}
+
+// ---- Condicionales
+const OPS={'>=':(a,b)=>a>=b,'>':(a,b)=>a>b,'==':(a,b)=>a==b,'<':(a,b)=>a<b};
+function cond(){
+  const a=+$('er').value,o=$('eo').value,b=+$('el').value,r=OPS[o](a,b);
+  $('ev').textContent=a;$('c0').textContent=a;$('c1').textContent=o.replace('<','&lt;');$('c1').innerHTML=esc(o);$('c2').textContent=b;
+  $('fq').textContent='¿edad '+o+' '+b+'?';
+  ['l2'].forEach(i=>$(i).classList.toggle('hot',r));
+  $('l4').classList.toggle('hot',!r);$('l3').classList.toggle('hot',!r);
+  $('nT').classList.toggle('hot',r);$('pT').classList.toggle('hot',r);
+  $('nF').classList.toggle('hot',!r);$('pF').classList.toggle('hot',!r);
+  $('tT').classList.toggle('w',r);$('tF').classList.toggle('w',!r);
+  $('cc').innerHTML='<b>&gt;</b> '+(r?'Puedes entrar':'Aún no puedes entrar');
+}
+['er','eo','el'].forEach(i=>$(i).oninput=cond);cond();
+
+// ---- Bucles
+let timer=null;
+function reset(){
+  clearInterval(timer);const n=Math.min(12,Math.max(1,+$('bn').value||1));
+  $('bnv').textContent=n;$('bi').textContent='–';$('bc').innerHTML='<b>&gt; (sin ejecutar)</b>';
+  $('cells').innerHTML=Array.from({length:n},(_,i)=>'<div class="cell" id="ce'+i+'">'+i+'</div>').join('');
+  ['b1','b2','b3','b4'].forEach(i=>$(i).classList.remove('hot'));$('bgo').disabled=false;
+  return n;
+}
+$('brs').onclick=reset;$('bn').oninput=reset;
+$('bgo').onclick=()=>{
+  const n=reset();let i=0;$('bgo').disabled=true;$('bc').innerHTML='';
+  timer=setInterval(()=>{
+    if(i>0){$('ce'+(i-1)).className='cell done'}
+    if(i>=n){clearInterval(timer);$('bi').textContent=n;['b1','b2','b3','b4'].forEach(x=>$(x).classList.remove('hot'));$('b1').classList.add('hot');$('bc').innerHTML+='<b>&gt; i = '+n+': la condición ya no se cumple. Fin.</b>';$('bgo').disabled=false;return}
+    $('ce'+i).className='cell on';$('bi').textContent=i;
+    ['b1','b2','b3','b4'].forEach(x=>$(x).classList.remove('hot'));$('b3').classList.add('hot');
+    $('bc').innerHTML+='Vuelta '+i+'<br>';i++;
+  },650);
+};
+reset();
+
+// ---- Quiz
+const Q=[
+ {c:'int a = 4;\nint b = 3;\nConsole.WriteLine(a + b);',o:['7','43','a + b'],r:0,e:'Con enteros, + suma. Da 7.'},
+ {c:'string s = "Hola";\nConsole.WriteLine(s + 3);',o:['Hola3','Error','Hola + 3'],r:0,e:'Con un string, + concatena: Hola3.'},
+ {c:'for (int i = 1; i <= 3; i++)\n    Console.Write(i);',o:['123','012','1 2 3 4'],r:0,e:'i empieza en 1 y llega hasta 3 incluido: 123.'}
+];
+let pts=0;
+$('qz').innerHTML=Q.map((q,k)=>'<div style="margin-bottom:22px"><pre class="code">'+esc(q.c)+'</pre>'+q.o.map((o,j)=>'<button class="opt" data-k="'+k+'" data-j="'+j+'">'+esc(o)+'</button>').join('')+'<div class="msg" id="qm'+k+'"></div></div>').join('');
+$('qz').onclick=e=>{
+  const b=e.target.closest('.opt');if(!b||b.parentNode.dataset.done)return;
+  const k=+b.dataset.k,j=+b.dataset.j,q=Q[k],ok=j===q.r;
+  b.parentNode.dataset.done=1;b.classList.add(ok?'ok':'bad');
+  if(!ok)b.parentNode.querySelectorAll('.opt')[q.r].classList.add('ok');
+  else{pts++;$('qs').textContent=pts}
+  const m=$('qm'+k);m.className='msg '+(ok?'ok':'bad');m.textContent=(ok?'¡Correcto! ':'Casi. ')+q.e;
+};
+</script>
+</body>
+</html>
